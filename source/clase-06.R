@@ -44,9 +44,11 @@ df = mutate(.data=df , sobrepeso = ifelse(test=weight_hcm>=0.85 , yes=1 , no=0))
 head(x=df, n=5)
 
 ## Generar una variable con categorías para la relación weight/height_cm.
+##Generar variable con muchas categorias
 df = mutate(df , category = case_when(weight_hcm>=0.85 ~ "pesado" ,
                                       weight_hcm>=0.8 & weight_hcm<0.85 ~ "promedio" ,
-                                      weight_hcm<0.8 ~ "liviano"))
+                                      weight_hcm<0.8 & weight_hcm>0.787 ~ "liviano",
+                                      weight_hcm<0.787 ~ "superliviano"))
 head(x=df, n=5)
 
 ### **2.5 Aplicar funciones a variables**
@@ -63,7 +65,7 @@ glimpse(df)
 df2 = mutate_if(.tbl=df , .predicate = is.character,.funs = as.numeric)
 glimpse(df2)
 
-#### **Ordenar un objeto por os valores de una variable:**
+#### **Ordenar un objeto por los valores de una variable:**
 
 ## Ordenar un dataframe: alfabético ascendente
 df = arrange(.data=df , category)
@@ -81,6 +83,9 @@ head(df)
 df = arrange(.data=df , desc(height_cm))
 head(df)
 
+##Cambiar columnas de lugar
+df = relocate(.data)
+
 ##=== [3.] Remover filas y/o columnas ===##
 
 ### **3.1 Seleccionar variables**
@@ -91,10 +96,11 @@ db
 ## La función `select()` permite seleccionar columnas de un dataframe o un tibble, usando el nombre o la posición de la variable en el conjunto de datos:
 db %>% select(c(1,3,5)) %>% head(n=3) 
 db %>% select(Petal.Length , Petal.Width , Species) %>% head(n=3)
+db %>% select(Petal.Length , Petal.Width , -Species) %>% head(n=3)
 
 #### **3.1.1 Seleccionar variables usando partes del nombre**
 ## Nombres de variable que empizan con (*Sepal*)
-db %>% select(starts_with("Sepal")) %>% head(n=3)
+db %>% select(starts_with("Sepal"),Species) %>% head(n=3)
 
 ## Nombres de variable que contengan la palabra (*Width*)
 db %>% select(contains("Width")) %>% head(n=3)
@@ -110,6 +116,8 @@ db %>% select_if(is.numeric) %>% head(3)
 ## Vector de caracteres
 vars = c("Species","Sepal.Length","Petal.Width")
 db %>% select(all_of(vars)) %>% head(n=3)
+
+
 
 ## Vector numérico:
 nums = c(5,2,3)
@@ -162,4 +170,10 @@ df <- import("https://www.datos.gov.co/resource/epsv-yhtj.csv")
 df <- as_tibble(df)
 df <- select(df, -cod_ase_)
 df <- mutate(df,ifelse(is.na(estrato),1,estrato))
+head(x=df , n=5)
 
+df = import("https://www.datos.gov.co/resource/epsv-yhtj.csv") %>%
+  as_tibble(df) %>%
+  select(-cod_ase_) %>%
+  mutate(ifelse(is.na(estrato),1,estrato))
+head(x=df , n=5)
