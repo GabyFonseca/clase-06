@@ -1,4 +1,4 @@
-## Eduard Martinez
+## Gabriela Fonseca
 ## Update: 14-09-2022
 
 ## Instalemos y llamemos a tidyverse
@@ -6,8 +6,11 @@ browseURL("https://www.rstudio.com/resources/cheatsheets/")
 install.packages("tidyverse")
 library(tidyverse)
 
+rm(list=ls())
 ## llamar/instalar otras librerias de la clase: (use pacman)
 print("Para esta clase vamos a necesitar las siguientes lbrerias: rio, skimr y janitor.")
+require(pacman)
+p_load (tidyverse, rio, skimr, janitor)
 
 ##=== [2.] Adicionar variables a un conjunto de datos ===##
 
@@ -22,9 +25,13 @@ df
 df$height_cm = df$height*2.54 ## agregar nueva variable
 df
 
+##Crear variable con la estatura en metros
+df$height_m = df$height_cm/100
+df
+
 ### **2.3 mutate()**
 ## Generar una variable con la relación weight/height_cm:
-df = mutate(.data = df , weight_hcm = weight/height_cm)
+df = mutate(.data = df , weight_hcm = weight/height_cm, weight_hm= weight/height_m)
 head(x=df, n=5)
 
 ### **2.4 Generar variables usando condicionales:**
